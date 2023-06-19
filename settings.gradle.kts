@@ -1,0 +1,2 @@
+rootProject.name = "restAssured-tests"
+
