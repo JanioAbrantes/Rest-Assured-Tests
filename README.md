@@ -1,13 +1,13 @@
-<h1 align="center">Testes de API com Rest Assured</h1>
+<h1 align="center">Testes de API com REST-assured (Tutorial)</h1>
 
-- RestAssured é uma biblioteca para testar API RESTful.
+- REST-assured é uma biblioteca para testar API RESTful.
   
 - Ele utiliza uma biblioteca chamada Hamcrest para fazer as assertivas.
   
 - Você pode utilizar a linguagem do BDD para deixar as coisas mais legais.
 
 ### Documentação
-- [Documentação Oficial do RestAssured](https://github.com/rest-assured/rest-assured/wiki/Usage)
+- [Documentação Oficial do REST-assured](https://github.com/rest-assured/rest-assured/wiki/Usage)
 
 ### O que você precisa para recriar este projeto:
 
@@ -154,3 +154,207 @@ public void deletaCliente()
 - pegaRiscoClienteSemAutorizacao() -> Vamos utilizar o método GET no endpoint /risco/{id} sem enviar as credenciais necessárias para acessá-lo.
 - atualizaCliente() -> Vamos utilizar o método PUT no endpoint /cliente/{id} para atualizar o cliente que foi criado.
 - deletaCliente() -> Vamos utilizar o método DELETE no endpoint /cliente/{id} para deletar o cliente que foi criado.
+
+### Antes do passo 4, vamos pensar um pouquinho
+
+Se você olhar o nome dos testes, você poderá perceber algumas coisas, tipo:
+- Existem dois testes que pega todos os clientes, cada um usando um endpoint diferente;
+- Em diversos testes você vai precisar criar um cliente;
+- Como todos os testes devem ser independentes um do outro, então você vai precisar deletar os clientes criados após cada teste.
+
+Com isso em mente, e visando a não repetição de código, podemos fazer algumas coisas antes de começar a realmente criar os testes.
+
+### Passo 4: Criando as funções que serão utilizadas mais de uma vez nos testes
+
+Iremos criar 3 funções que serão utilizadas pelos testes, sendo que duas delas serão usadas em todos eles. Além das funções, também criaremos mais duas variáveis, uma constante e uma instância de objeto:
+```sh
+    private static final String LISTA_VAZIA = "{}";
+    Cliente clienteParaCadastro = new Cliente("Jeovanio", 43, 1001);
+```
+
+A primeira função será a de criar um cliente:
+```sh
+    private ValidatableResponse criarCliente() {
+        return  given()
+                    .contentType(ContentType.JSON)
+                    .body(clienteParaCadastro)
+                .when()
+                    .post(CLIENTE)
+                .then();
+    }
+```
+
+A segunda irá deletar todos os clientes que estiverem cadastrados:
+```sh
+    private ValidatableResponse deletaTodosClientes() {
+        return  when()
+                    .delete(APAGA_CLIENTES)
+                .then()
+                    .statusCode(200)
+                    .assertThat()
+                    .body(new IsEqual<>(LISTA_VAZIA));
+    }
+```
+
+A terceira irá pegar todos os clientes, e vai receber um parâmetro caso você queira utilizar o endpoint ao invés de apenas a url base:
+```sh
+    private ValidatableResponse pegaTodosClientes(String endpoint) {
+        return  given()
+                    .contentType(ContentType.JSON)
+                .when()
+                    .get(MAIN_ADDRESS + endpoint)
+                .then()
+                    .statusCode(200);
+    }
+```
+
+### Dissecando o código
+
+- LISTA_VAZIA = "{}" -> Isso é meio que um spoiler, mas você verá que será utilizado mais de uma vez o "{}".
+- Cliente clienteParaCadastro = new Cliente("Jeovanio", 43, 1001); -> cria uma variável que é uma instância da classe Cliente. Os atributos você poderá colocar o que quiser, sabendo que é (nome, idade, id).
+- ValidatableResponse -> Importado do REST-assured e necessário para enviar os returns das funções para nossos testes.
+- .body(clienteParaCadastro) -> Coloca dentro do corpo da requisição a variável declarada anteriormente.
+- get/post/put/delete -> Métodos http. GET pega algo, POST "posta" algo, PUT atualiza algo (esse aparecerá mais na frente) e DELETE deleta algo.
+- .assertThat() -> Assertiva. Tente ler como algo tipo "garanta isso:". Logo em seguida vem o que você quer que garanta que seja verdade.
+- .body(new IsEqual<>(LISTA_VAZIA)) -> Isso ta logo após o assertThat, ou seja, "garanta que: o conteúdo do corpo da requisição IsEqual (é igual) a "{}" (O valor de LISTA_VAZIA que declaramos ali em cima)".
+
+Pronto, agora nós finalmente chegamos no passo mais emocionante do nosso código, que é o:
+
+### Passo 5: Hora de criar nossos testes!!!
+
+Levamos um bom tempo para chegar até aqui, porém daqui para baixo é basicamente apenas códigos e assertivas, começando por duas etapas bem importantes em muitos casos de testes:
+```sh
+    @BeforeEach
+    public void setUp() {
+        criarCliente();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        deletaTodosClientes();
+    }
+```
+
+### Dissecando o código
+
+-  @BeforeEach -> Execute esse treco aqui embaixo ANTES de todos os testes.
+-  @AfterEach -> Execute esse treco aqui embaixo DEPOIS de todos os testes
+
+Para quê precisamos disso? Lembra que comentei que praticamente todos os testes precisariam de um cliente criado, e, como todos os testes precisam ser independentes, logo não pode ter nenhum cliente criado? Então... utilizando o `@BeforeEach` vai garantir que antes de cada teste, um cliente será criado e, com o `@AfterEach`, garante que após cada teste o cliente será apagado.
+
+### pegaTodosClientesSemClientesCadastrados()
+```sh
+    @Test
+    @DisplayName("Quando pegar todos os clientes sem cliente cadastrado, então a lista deve estar vazia.")
+    public void pegaTodosClientesSemClientesCadastrados() {
+        deletaTodosClientes();
+
+        pegaTodosClientes("")
+                .assertThat()
+                .body(new IsEqual<>(LISTA_VAZIA));
+    }
+```
+
+### pegaTodosClientesCadastrados()
+```sh
+    @Test
+    @DisplayName("Quando pegar todos os clientes com algum cliente cadastrado, então a resposta não poderá estar vazia.")
+    public void pegaTodosClientesCadastrados() {
+
+        pegaTodosClientes("clientes/")
+                .assertThat()
+                .body(not(LISTA_VAZIA));
+    }
+```
+
+### cadastraCliente()
+```sh
+    @Test
+    @DisplayName("Quando cadastrar um cliente, então ele deve estar disponível no resultado.")
+    public void cadastraCliente() {
+        criarCliente()
+                .statusCode(201)
+                .body("1001.id", equalTo(1001))
+                .body("1001.nome", equalTo("Jeovanio"))
+                .body("1001.idade", equalTo(43));
+    }
+```
+
+### pegaClienteCadastrado()
+```sh
+    @Test
+    @DisplayName("Quando solicitado um cliente específico, deverá ser retornado seus dados cadastrados.")
+    public void pegaClienteCadastrado() {
+        given()
+                .contentType(ContentType.JSON)
+        .when()
+                .get(CLIENTE + 1001)
+        .then()
+                .statusCode(200)
+                .assertThat()
+                .body("id", equalTo(1001))
+                .body("nome", equalTo("Jeovanio"))
+                .body("idade", equalTo(43));
+    }
+```
+
+### pegaRiscoCliente()
+```sh
+    @Test
+    @DisplayName("Quando solicitar o risco de um cliente com credenciais válidas, o valor correto deve ser retornado.")
+    public void pegaRiscoCliente() {
+        given()
+                .auth()
+                .basic("aluno", "senha")
+        .when()
+                .get(RISCO + 1001)
+        .then()
+                .statusCode(200)
+                .assertThat().body("risco", equalTo(-105));
+    }
+```
+
+### pegaRiscoClienteSemAutorizacao()
+```sh
+    @Test
+    @DisplayName("Quando solicitar o risco de um cliente sem credenciais válidas, o retorno deverá ser null.")
+    public void pegaRiscoClienteSemAutorizacao() {
+        when()
+                .get(RISCO + 1001)
+        .then()
+                .statusCode(401)
+                .assertThat().body("risco", equalTo(null));
+    }
+```
+
+### atualizaCliente()
+```sh
+    @Test
+    @DisplayName("Quando atualizar um cliente, então os dados dele devem ser alterados.")
+    public void atualizaCliente() {
+        clienteParaCadastro.setIdade(38);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(clienteParaCadastro)
+        .when()
+                .put(CLIENTE)
+        .then()
+                .statusCode(200)
+                .body("1001.idade", equalTo(38));
+    }
+```
+
+### deletaCliente()
+```sh
+    @Test
+    @DisplayName("Quando deletar um cliente, então os seus dados devem ser apagados.")
+    public void deletaCliente() {
+        when()
+                .delete(CLIENTE + 1001)
+        .then()
+                .statusCode(200)
+                .assertThat()
+                .body(not(contains("Jeovanio")));
+    }
+```
