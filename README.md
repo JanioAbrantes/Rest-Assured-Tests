@@ -1,13 +1,13 @@
-<h1 align="center">Testes de API com REST-assured (Tutorial)</h1>
+<h1 align="center">Testes de API com REST Assured (Tutorial)</h1>
 
-- REST-assured é uma biblioteca para testar API RESTful.
+- REST Assured é uma biblioteca para testar API RESTful.
   
 - Ele utiliza uma biblioteca chamada Hamcrest para fazer as assertivas.
   
 - Você pode utilizar a linguagem do BDD para deixar as coisas mais legais.
 
 ### Documentação
-- [Documentação Oficial do REST-assured](https://github.com/rest-assured/rest-assured/wiki/Usage)
+- [Documentação Oficial do REST Assured](https://github.com/REST Assured/REST Assured/wiki/Usage)
 
 ### O que você precisa para recriar este projeto:
 
@@ -35,7 +35,7 @@ Agora abra o arquivo `build.gradle.kts` e substitua o que tiver em dependencies 
 
 ```sh
 dependencies {
-    testImplementation("io.rest-assured:rest-assured:5.3.0")
+    testImplementation("io.REST Assured:REST Assured:5.3.0")
     testImplementation(platform("org.junit:junit-bom:5.9.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.12.7.1")
@@ -212,7 +212,7 @@ A terceira irá pegar todos os clientes, e vai receber um parâmetro caso você 
 
 - LISTA_VAZIA = "{}" -> Isso é meio que um spoiler, mas você verá que será utilizado mais de uma vez o "{}".
 - Cliente clienteParaCadastro = new Cliente("Jeovanio", 43, 1001); -> cria uma variável que é uma instância da classe Cliente. Os atributos você poderá colocar o que quiser, sabendo que é (nome, idade, id).
-- ValidatableResponse -> Importado do REST-assured e necessário para enviar os returns das funções para nossos testes.
+- ValidatableResponse -> Importado do REST Assured e necessário para enviar os returns das funções para nossos testes.
 - .body(clienteParaCadastro) -> Coloca dentro do corpo da requisição a variável declarada anteriormente.
 - get/post/put/delete -> Métodos http. GET pega algo, POST "posta" algo, PUT atualiza algo (esse aparecerá mais na frente) e DELETE deleta algo.
 - .assertThat() -> Assertiva. Tente ler como algo tipo "garanta isso:". Logo em seguida vem o que você quer que garanta que seja verdade.
