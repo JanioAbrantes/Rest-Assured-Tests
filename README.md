@@ -7,7 +7,7 @@
 - Você pode utilizar a linguagem do BDD para deixar as coisas mais legais.
 
 ### Documentação
-- [Documentação Oficial do REST Assured](https://github.com/REST Assured/REST Assured/wiki/Usage)
+- [Documentação Oficial do REST Assured](https://github.com/rest-assured/rest-assured/wiki/Usage)
 
 ### O que você precisa para recriar este projeto:
 
@@ -35,7 +35,7 @@ Agora abra o arquivo `build.gradle.kts` e substitua o que tiver em dependencies 
 
 ```sh
 dependencies {
-    testImplementation("io.REST Assured:REST Assured:5.3.0")
+    testImplementation("io.rest-assured:rest-assured:5.3.0")
     testImplementation(platform("org.junit:junit-bom:5.9.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.12.7.1")
