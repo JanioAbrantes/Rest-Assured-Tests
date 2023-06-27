@@ -94,13 +94,13 @@ Você vai ver que já tem uma classe criada automaticamente, a TestaCliente. Den
 Com muita fé não deve ter dado nenhum erro, porém agora precisamos entender o que foi que aconteceu aí em cima, o que nos leva ao nosso quadro:
 ### Dissecando o código
 
-- @Test -> Utilizado para informar "ei, a função aí de baixo é um teste, beleza?".
-- @DisplayName -> Quando teste é executado, no terminal normalmente mostra o nome do teste. Com o @DisplayName, será mostrado seja lá o que tu por aí dentro, deixando mais fácil de ler seus testes.
-- public void TestandoTeste() -> Maneira de declarar nossa função de teste. O void significa que a função não terá retorno.
-- given() when() then() -> BDDzim, leia como "Dado, Quando, Então", ou seja, Dado que tu tenha tal coisa, Quando você fizer isso, Então isso deverá acontecer.
-- given().contentType(ContentType.JSON) -> Dado que tu tenha um conteúdo JSON;
-- .when().get("http://localhost:8080/") -> Quando você utilizar o método GET para acessar essa url;
-- .then().statusCode(200) -> Então o servidor deve retornar o Status Code 200 (OK).
+- @Test → Utilizado para informar "ei, a função aí de baixo é um teste, beleza?".
+- @DisplayName → Quando teste é executado, no terminal normalmente mostra o nome do teste. Com o @DisplayName, será mostrado seja lá o que tu por aí dentro, deixando mais fácil de ler seus testes.
+- public void TestandoTeste() → Maneira de declarar nossa função de teste. O void significa que a função não terá retorno.
+- given() when() then() → BDDzim, leia como "Dado, Quando, Então", ou seja, Dado que tu tenha tal coisa, Quando você fizer isso, Então isso deverá acontecer.
+- given().contentType(ContentType.JSON) → Dado que tu tenha um conteúdo JSON;
+- .when().get("http://localhost:8080/") → Quando você utilizar o método GET para acessar essa url;
+- .then().statusCode(200) → Então o servidor deve retornar o Status Code 200 (OK).
 
 Pronto. Obviamente isso foi criado apenas para mostrar como iremos criar os testes e dando uma olhada bem por cima em como deve ser escrito nossos testes. Agora você deleta isso daí porque vamos começar a criar EXATAMENTE o que tem nesse projetinho.
 
@@ -126,8 +126,8 @@ http://localhost:8080/swagger-ui.html#/cliente45controller
 
 ### Dissecando o código
 
-- private -> Apenas a própria classe terá acesso a essa variável.
-- static final String -> Utilizado para criar uma constante, ou seja, algo que não será mudado. Por padrão, a gente deixa o nome da variável totalmente maiúscula quando ela for uma constante.
+- private → Apenas a própria classe terá acesso a essa variável.
+- static final String → Utilizado para criar uma constante, ou seja, algo que não será mudado. Por padrão, a gente deixa o nome da variável totalmente maiúscula quando ela for uma constante.
 
 ### Passo 3: Vamos criar as funções de testes, ao menos uma para cada método e/ou endpoint da API
 
@@ -146,14 +146,14 @@ public void deletaCliente()
 
 ### Dissecando o código
 
-- pegaTodosClientesSemClientesCadastrados() -> Vamos utilizar o método GET na url base quando não houver clientes cadastrados.
-- pegaTodosClientesCadastrados() -> Se você olhar no swagger, vai ver que existem duas maneiras de pegar todos os clientes. Esse teste utilizará o endpoint /clientes para pegar todos os clientes, tendo algum já cadastrado (para diferenciar mais do teste anterior).
-- cadastraCliente() -> Vamos utilizar o método POST no endpoint /cliente para cadastar um cliente no servidor.
-- pegaClienteCadastrado() -> Vamos utilizar o método GET no endpoint /cliente/{id} para pegar apenas um cliente específico.
-- pegaRiscoCliente() -> Vamos utilizar o método GET no endpoint /risco/{id} para ver o risco do cliente cadastrado.
-- pegaRiscoClienteSemAutorizacao() -> Vamos utilizar o método GET no endpoint /risco/{id} sem enviar as credenciais necessárias para acessá-lo.
-- atualizaCliente() -> Vamos utilizar o método PUT no endpoint /cliente/{id} para atualizar o cliente que foi criado.
-- deletaCliente() -> Vamos utilizar o método DELETE no endpoint /cliente/{id} para deletar o cliente que foi criado.
+- pegaTodosClientesSemClientesCadastrados() → Vamos utilizar o método GET na url base quando não houver clientes cadastrados.
+- pegaTodosClientesCadastrados() → Se você olhar no swagger, vai ver que existem duas maneiras de pegar todos os clientes. Esse teste utilizará o endpoint /clientes para pegar todos os clientes, tendo algum já cadastrado (para diferenciar mais do teste anterior).
+- cadastraCliente() → Vamos utilizar o método POST no endpoint /cliente para cadastar um cliente no servidor.
+- pegaClienteCadastrado() → Vamos utilizar o método GET no endpoint /cliente/{id} para pegar apenas um cliente específico.
+- pegaRiscoCliente() → Vamos utilizar o método GET no endpoint /risco/{id} para ver o risco do cliente cadastrado.
+- pegaRiscoClienteSemAutorizacao() → Vamos utilizar o método GET no endpoint /risco/{id} sem enviar as credenciais necessárias para acessá-lo.
+- atualizaCliente() → Vamos utilizar o método PUT no endpoint /cliente/{id} para atualizar o cliente que foi criado.
+- deletaCliente() → Vamos utilizar o método DELETE no endpoint /cliente/{id} para deletar o cliente que foi criado.
 
 ### Antes do passo 4, vamos pensar um pouquinho
 
@@ -210,13 +210,13 @@ A terceira irá pegar todos os clientes, e vai receber um parâmetro caso você 
 
 ### Dissecando o código
 
-- LISTA_VAZIA = "{}" -> Isso é meio que um spoiler, mas você verá que será utilizado mais de uma vez o "{}".
-- Cliente clienteParaCadastro = new Cliente("Jeovanio", 43, 1001); -> cria uma variável que é uma instância da classe Cliente. Os atributos você poderá colocar o que quiser, sabendo que é (nome, idade, id).
-- ValidatableResponse -> Importado do REST Assured e necessário para enviar os returns das funções para nossos testes.
-- .body(clienteParaCadastro) -> Coloca dentro do corpo da requisição a variável declarada anteriormente.
-- get/post/put/delete -> Métodos http. GET pega algo, POST "posta" algo, PUT atualiza algo (esse aparecerá mais na frente) e DELETE deleta algo.
-- .assertThat() -> Assertiva. Tente ler como algo tipo "garanta isso:". Logo em seguida vem o que você quer que garanta que seja verdade.
-- .body(new IsEqual<>(LISTA_VAZIA)) -> Isso ta logo após o assertThat, ou seja, "garanta que: o conteúdo do corpo da requisição IsEqual (é igual) a "{}" (O valor de LISTA_VAZIA que declaramos ali em cima)".
+- LISTA_VAZIA = "{}" → Isso é meio que um spoiler, mas você verá que será utilizado mais de uma vez o "{}".
+- Cliente clienteParaCadastro = new Cliente("Jeovanio", 43, 1001); → cria uma variável que é uma instância da classe Cliente. Os atributos você poderá colocar o que quiser, sabendo que é (nome, idade, id).
+- ValidatableResponse → Importado do REST Assured e necessário para enviar os returns das funções para nossos testes.
+- .body(clienteParaCadastro) → Coloca dentro do corpo da requisição a variável declarada anteriormente.
+- get/post/put/delete → Métodos http. GET pega algo, POST "posta" algo, PUT atualiza algo (esse aparecerá mais na frente) e DELETE deleta algo.
+- .assertThat() → Assertiva. Tente ler como algo tipo "garanta isso:". Logo em seguida vem o que você quer que garanta que seja verdade.
+- .body(new IsEqual<>(LISTA_VAZIA)) → Isso ta logo após o assertThat, ou seja, "garanta que: o conteúdo do corpo da requisição IsEqual (é igual) a "{}" (O valor de LISTA_VAZIA que declaramos ali em cima)".
 
 Pronto, agora nós finalmente chegamos no passo mais emocionante do nosso código, que é o:
 
@@ -237,12 +237,14 @@ Levamos um bom tempo para chegar até aqui, porém daqui para baixo é basicamen
 
 ### Dissecando o código
 
--  @BeforeEach -> Execute esse treco aqui embaixo ANTES de todos os testes.
--  @AfterEach -> Execute esse treco aqui embaixo DEPOIS de todos os testes
+-  @BeforeEach → Execute esse treco aqui embaixo ANTES de todos os testes.
+-  @AfterEach → Execute esse treco aqui embaixo DEPOIS de todos os testes
 
 Para quê precisamos disso? Lembra que comentei que praticamente todos os testes precisariam de um cliente criado, e, como todos os testes precisam ser independentes, logo não pode ter nenhum cliente criado? Então... utilizando o `@BeforeEach` vai garantir que antes de cada teste, um cliente será criado e, com o `@AfterEach`, garante que após cada teste o cliente será apagado.
 
 ### pegaTodosClientesSemClientesCadastrados()
+
+Como é necessário pegar uma lista vazia, e nosso setUp ta criando um cliente, primeiro precisamos deletar os clientes cadastrados para depois fazer a consulta. Como estamos utilizando a url base da API, passaremos como endpoint apenas uma string vazia.
 ```sh
     @Test
     @DisplayName("Quando pegar todos os clientes sem cliente cadastrado, então a lista deve estar vazia.")
@@ -256,6 +258,8 @@ Para quê precisamos disso? Lembra que comentei que praticamente todos os testes
 ```
 
 ### pegaTodosClientesCadastrados()
+
+Basicamente a mesma situação anterior, porém dessa vez estaremos testando em um endpoint diferente e garantindo que a lista não estará vazia.
 ```sh
     @Test
     @DisplayName("Quando pegar todos os clientes com algum cliente cadastrado, então a resposta não poderá estar vazia.")
@@ -268,6 +272,7 @@ Para quê precisamos disso? Lembra que comentei que praticamente todos os testes
 ```
 
 ### cadastraCliente()
+
 ```sh
     @Test
     @DisplayName("Quando cadastrar um cliente, então ele deve estar disponível no resultado.")
