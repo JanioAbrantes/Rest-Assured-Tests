@@ -241,6 +241,7 @@ Levamos um bom tempo para chegar até aqui, porém daqui para baixo é basicamen
 -  @AfterEach → Execute esse treco aqui embaixo DEPOIS de todos os testes
 
 Para quê precisamos disso? Lembra que comentei que praticamente todos os testes precisariam de um cliente criado, e, como todos os testes precisam ser independentes, logo não pode ter nenhum cliente criado? Então... utilizando o `@BeforeEach` vai garantir que antes de cada teste, um cliente será criado e, com o `@AfterEach`, garante que após cada teste o cliente será apagado.
+NOTA: A próxima sessão de Dissecando o código aparecerá depois dos 8 testes.
 
 ### pegaTodosClientesSemClientesCadastrados()
 
@@ -273,6 +274,7 @@ Basicamente a mesma situação anterior, porém dessa vez estaremos testando em 
 
 ### cadastraCliente()
 
+Já estamos cadastrando clientes no setUp, porém precisamos saber se os dados passados estão sendo retornados com sucesso, por isso primeiro verificaremos se o status code é 201 e então verificaremos se os 3 atributos da classe cliente são os que foram informados.
 ```sh
     @Test
     @DisplayName("Quando cadastrar um cliente, então ele deve estar disponível no resultado.")
@@ -286,6 +288,8 @@ Basicamente a mesma situação anterior, porém dessa vez estaremos testando em 
 ```
 
 ### pegaClienteCadastrado()
+
+Parecido com o anterior, agora precisamos procurar um cliente criado pelo ID dele e precisamos garantir que seus 3 atributos são os corretos.
 ```sh
     @Test
     @DisplayName("Quando solicitado um cliente específico, deverá ser retornado seus dados cadastrados.")
@@ -303,6 +307,7 @@ Basicamente a mesma situação anterior, porém dessa vez estaremos testando em 
     }
 ```
 
+Cada cliente gerado possui um risco, e para acessar esse valor você precisa passar as credenciais válidas. Caso você tenha alterado as informações passadas para criar o cliente, é provável que o risco seja um valor diferente, nesse caso apenas edite com o risco correto. 
 ### pegaRiscoCliente()
 ```sh
     @Test
@@ -315,11 +320,14 @@ Basicamente a mesma situação anterior, porém dessa vez estaremos testando em 
                 .get(RISCO + 1001)
         .then()
                 .statusCode(200)
-                .assertThat().body("risco", equalTo(-105));
+                .assertThat()
+                .body("risco", equalTo(-105));
     }
 ```
 
 ### pegaRiscoClienteSemAutorizacao()
+
+Caso alguém tente acessar o risco de um cliente sem informar as credenciais, deverá retornar o código 401 com o corpo da requisição null.
 ```sh
     @Test
     @DisplayName("Quando solicitar o risco de um cliente sem credenciais válidas, o retorno deverá ser null.")
@@ -328,11 +336,14 @@ Basicamente a mesma situação anterior, porém dessa vez estaremos testando em 
                 .get(RISCO + 1001)
         .then()
                 .statusCode(401)
-                .assertThat().body("risco", equalTo(null));
+                .assertThat()
+                .body("risco", equalTo(null));
     }
 ```
 
 ### atualizaCliente()
+
+Para atualizar os dados de um cliente, primeiro precisaremos fazer a modificação no objeto criado, então passar os dados novamente na requisição com o método PUT no endpoint correto e então verifica se na resposta a idade atual realmente foi modificada.
 ```sh
     @Test
     @DisplayName("Quando atualizar um cliente, então os dados dele devem ser alterados.")
@@ -351,6 +362,8 @@ Basicamente a mesma situação anterior, porém dessa vez estaremos testando em 
 ```
 
 ### deletaCliente()
+
+Para deletar um cliente específico, você precisa enviar o método DELETE para o endpoit correto utilizando o ID do cliente a ser deletado. Depois é só fazer a verificação para saber se a lista de clientes cadastrados possui o cliente deletado.
 ```sh
     @Test
     @DisplayName("Quando deletar um cliente, então os seus dados devem ser apagados.")
@@ -363,3 +376,12 @@ Basicamente a mesma situação anterior, porém dessa vez estaremos testando em 
                 .body(not(contains("Jeovanio")));
     }
 ```
+
+### Dissecando o código
+
+- .body("1001.nome", equalTo("Jeovanio")) → O nome do cliente com id 1001 é igual a "Jeovanio".
+- .get(CLIENTE + 1001) → Adicionando a ID do cliente como endpoint. Basicamente ficará "localhost:8080/cliente/1001".
+- .auth().basic("aluno", "senha") → Enviando as credenciais do tipo basic(login, senha).
+- clienteParaCadastro.setIdade(38); → Modifica a idade cadastrada para a idade informada.
+
+E com isso chegamos ao fim, porém existem diversas maneiras de testar com uma quantidade enorme de tipos diferentes de assertivas, então faça um favor a si mesmo e mantenha a documentação da ferramenta que você está usando sempre ao seu lado, pois ela é e sempre será sua melhor amiga na sua jornada contra os detestáveis bugs.
