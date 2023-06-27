@@ -307,8 +307,9 @@ Parecido com o anterior, agora precisamos procurar um cliente criado pelo ID del
     }
 ```
 
-Cada cliente gerado possui um risco, e para acessar esse valor você precisa passar as credenciais válidas. Caso você tenha alterado as informações passadas para criar o cliente, é provável que o risco seja um valor diferente, nesse caso apenas edite com o risco correto. 
 ### pegaRiscoCliente()
+
+Cada cliente gerado possui um risco, e para acessar esse valor você precisa passar as credenciais válidas. Caso você tenha alterado as informações passadas para criar o cliente, é provável que o risco seja um valor diferente, nesse caso apenas edite com o risco correto. 
 ```sh
     @Test
     @DisplayName("Quando solicitar o risco de um cliente com credenciais válidas, o valor correto deve ser retornado.")
