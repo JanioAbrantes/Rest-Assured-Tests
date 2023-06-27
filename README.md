@@ -18,6 +18,8 @@
 - Jackson-databind 2.12.7.1
 
 Além disso, você vai precisar baixar o projeto do [Vinicius Pessoni](https://github.com/vinnypessoni/api-clientes-exemplo-microservico) para criar um servidor local.
+
+NOTA: Caso você não conheça os status code, deixarei aqui a versão de [cachorrinhos](https://httpstatusdogs.com/) e [gatinhos](https://http.cat/)
  
 <h1 align="center">Pronto, agora vejamos passo a passo o que deve ser feito</h1>
 
